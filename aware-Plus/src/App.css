@@ -54,6 +54,40 @@
     border-bottom: 1px solid #000;
 }
 
+.header-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px; 
+}
+
+.header-home {
+    padding: 12px 0px 0px 0px;
+}
+
+/*search bar label hidden*/
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+}
+
+.search-bar {
+    flex-grow: 1;
+    text-align: center;
+    padding: 12px 0px 0px 0px;
+}
+
+.header-login {
+    align-items: center;
+    padding: 12px 0px 0px 0px;
+}
+
 .side-nav {
     position: fixed;
     top: 50px;
@@ -61,4 +95,5 @@
     bottom: 0;
     width: 150px;
     border-right: 1px solid;
+    padding: 5px;
 }
