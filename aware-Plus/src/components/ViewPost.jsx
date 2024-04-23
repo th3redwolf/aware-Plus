@@ -77,6 +77,23 @@ const ViewPost = () => {
         }
         fetchComments();
 
+        const channel = supabase
+            .channel('comments-insert-channel')
+            .on(
+                'postgres_changes',
+                { event: 'INSERT', schema: 'public', table: 'comments' },
+                (payload) => {
+                    console.log('Change received!', payload);
+                    fetchComments();
+                }
+            )
+            .subscribe();
+
+        // Unsubscribe when the component is unmounted
+        return () => {
+            channel.unsubscribe();
+        }
+
 
 
 
@@ -128,7 +145,7 @@ const ViewPost = () => {
 
     const commentSubmit = async (event) => {
 
-        //event.preventDefault();
+        event.preventDefault();
         const {data} = await supabase
         .from('comments')
         .insert({post_id: id, comment: newComment});
