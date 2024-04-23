@@ -41,6 +41,11 @@ const SideNav = () => {
                         Home
                     </Link>
                 </div>
+                <div>
+                    <Link to="/create">
+                        Create Post
+                    </Link>
+                </div>
             </nav>
         </div>
     )

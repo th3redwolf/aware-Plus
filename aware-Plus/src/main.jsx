@@ -4,6 +4,7 @@ import App from './App.jsx'
 import './index.css'
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Layout from '../routes/Layout.jsx';
+import Create from '../routes/Create.jsx';
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -12,6 +13,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Routes>
             <Route path="/" element={<Layout/>}>
                 <Route index={true} element={<App/>}/>
+                <Route index={false} path="/create" element={<Create/>}/>
 
             </Route>
         </Routes>
