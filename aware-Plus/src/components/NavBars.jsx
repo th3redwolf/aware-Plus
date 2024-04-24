@@ -46,6 +46,11 @@ const SideNav = () => {
                         Create Post
                     </Link>
                 </div>
+                <div>
+                    <Link to="/myAccount">
+                        My Account
+                    </Link>
+                </div>
             </nav>
         </div>
     )
