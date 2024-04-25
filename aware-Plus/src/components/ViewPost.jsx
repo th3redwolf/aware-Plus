@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef, useCallback} from "react";
-import {useParams} from "react-router-dom";
+import {useParams, useNavigate} from "react-router-dom";
 import {supabase} from '../client.js';
 import edit from '../../edit.png';
 
@@ -10,8 +10,10 @@ const ViewPost = () => {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
 
-    const [editingOnOff, setEditingOnOff] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
     const [editedPost, setEditedPost] = useState({...post});
+    const [showOptions, setShowOptions] = useState(false);
+    const navigate = useNavigate();
 
     const textAreaRef = useRef(null);
     
@@ -104,11 +106,17 @@ const ViewPost = () => {
         textAreaRef.current.value = "";
     } 
 
-    // edit /update post
+    // edit / update, delete post
+    const handleOptions = () => {
+
+        setShowOptions(true);
+    }
+
     const handleEdit = () => {
 
         setEditedPost({...post});
-        setEditingOnOff(true);
+        setIsEditing(true);
+        setShowOptions(false);
     }
 
     const handleEditing = (event) => {
@@ -129,26 +137,49 @@ const ViewPost = () => {
             .eq('id', id);
 
         if (data) {
-            setPost(data[0]);
-            setEditingOnOff(false);
+            // setPost(data[0]);
+            setPost(editedPost)
+            setIsEditing(false);
         }
         else {
-            console.error(error)
+            console.error(error);
+            alert("error ocurred while updating post");
         }
     }
 
     const handleCancel = () => {
 
-        setEditingOnOff(false);
+        setIsEditing(false);
+    }
+
+    const deletePost = async (event) => {
+
+        event.preventDefault();
+        const {data, error} = await supabase
+            .from('posts')
+            .delete()
+            .eq('id', id);
+        // window.location = '/';
+        navigate('/');
     }
 
     return (
         <div>
-            {editingOnOff ? (                
+            <div>
+                <p>{post.created_at}</p>
+                <h2>{post.title}</h2>
+                <button onClick={handleOptions}>Options <img className="edit-button" alt="edit button" src={edit}/></button>
+                {/* <button onClick={handleEdit}>Options <img className="edit-button" alt="edit button" src={edit}/></button> */}
+                {/* <button className="delete-button" onClick={deletePost}>Delete</button> */}
+            </div>
+             {showOptions && (
+                <div>
+                <button onClick={handleEdit}>Edit</button>
+                <button className="delete-button" onClick={deletePost}>Delete</button>
+                </div>
+             )}
+            {isEditing ? (                
                 <form>
-                    <p>{editedPost.created_at}</p>
-                    <h2>{editedPost.title}</h2>
-
                     <label htmlFor="text">Text (optional)</label> <br />
                     <textarea rows="5" cols="50" id="text" value={editedPost.text} onChange={handleEditing}></textarea> <br />
 
@@ -163,13 +194,10 @@ const ViewPost = () => {
                 </form>
             ) : (
                 <>
-                    <p>{post.created_at}</p>
-                    <h2>{post.title}</h2>
                     <p>{post.text}</p>
                     {post.image_url && <img src={post.image_url} />}
                     {post.video_url && renderVideo(post.video_url)}
                     {/* {post.video_url && <video controls><source src={post.video_url} type="video/mp4"/></video>} */}
-                    <button onClick={handleEdit}>Edit <img className="moreButton" alt="edit button" src={edit}/></button>
                 </>
             )}
 

@@ -1,5 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import home from "../../home-icon.png";
 
 const HeaderBar = () => {
 
@@ -9,7 +10,7 @@ const HeaderBar = () => {
                 <nav className="header-nav">
                     <div className="header-home">
                         <Link to="/">
-                            Home
+                        <img className="home-icon" alt="home button" src={home}/>AwarePlus
                         </Link>
                     </div>
                     <div className="search-bar">
@@ -38,7 +39,7 @@ const SideNav = () => {
             <nav>
                 <div>
                     <Link to="/">
-                        Home
+                        Home Feed
                     </Link>
                 </div>
                 <div>

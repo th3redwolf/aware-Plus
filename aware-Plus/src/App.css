@@ -52,6 +52,7 @@
     right: 0;
     height: 50px;
     border-bottom: 1px solid #000;
+    background-color: #85cdef2c;
 }
 
 .header-nav {
@@ -62,7 +63,7 @@
 }
 
 .header-home {
-    padding: 12px 0px 0px 0px;
+    padding: 5px 0px 0px 0px;
 }
 
 /*search bar label hidden*/
@@ -96,9 +97,14 @@
     width: 150px;
     border-right: 1px solid;
     padding: 5px;
+    background-color: #85cdef2c;
 }
 
 .display-posts {
-    margin-top: 50px;
-    margin-left: 150px;
+    position: absolute;
+    top: 50px;
+    left: 160px;
+    right: 0;
+    bottom: 0;
+    background-color: #f6f9fac2;
 }
