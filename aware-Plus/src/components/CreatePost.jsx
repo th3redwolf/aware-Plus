@@ -46,7 +46,7 @@ const CreatePost = () => {
                 <label htmlFor="video_url">Video URL</label> <br/>
                 <input type="text" id="video_url" onChange={handleChange}/> <br/>
 
-                <input type="submit" value="submit" onClick={createPost}/>
+                <input type="submit" value="Post" onClick={createPost}/>
 
             </form>
         </div>

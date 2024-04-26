@@ -13,8 +13,9 @@ const ViewPost = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [editedPost, setEditedPost] = useState({...post});
     const [showOptions, setShowOptions] = useState(false);
-    const navigate = useNavigate();
+    const [showCommentSubmit, setShowCommentSubmit] = useState(false);
 
+    const navigate = useNavigate();
     const textAreaRef = useRef(null);
     
     useEffect(() => {
@@ -70,18 +71,18 @@ const ViewPost = () => {
         if (url.includes('youtube.com')) {
             const videoId = url.split('v=')[1];
             const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-            return <iframe src={embedUrl} style={{border: 'none'}} allow="autoplay; encrypted-media" allowFullScreen></iframe>;
+            return <iframe src={embedUrl} style={{border: 'none', width: '100%', maxWidth: '700px', height: '400px'}} allow="autoplay; encrypted-media" allowFullScreen></iframe>;
         }
         else if (url.includes('youtu.be')) {
             const videoId = url.split('/')[3].split('?')[0];
             const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-            return <iframe src={embedUrl} style={{border: 'none'}} allow="autoplay; encrypted-media" allowFullScreen></iframe>;
+            return <iframe src={embedUrl} style={{border: 'none', width: '100%', maxWidth: '700px', height: '400px'}} allow="autoplay; encrypted-media" allowFullScreen></iframe>;
         }
         else if (url.endsWith('.mp4')){
-            return <video controls><source src={url} type="video/mp4"/></video>;
+            return <video controls style={{width: '100%', height: '500px'}}><source src={url} type="video/mp4"/></video>;
         }
     }
-
+    // comment section
     const adjustComment = (event) => {
 
         if (textAreaRef.current) {
@@ -93,6 +94,11 @@ const ViewPost = () => {
     const handleChange = (event) => {
 
         setNewComment(event.target.value);
+        setShowCommentSubmit(true);
+    }
+
+    const handleComment = () => {
+        setShowCommentSubmit(prev => !prev);
     }
 
     const commentSubmit = async (event) => {
@@ -104,12 +110,12 @@ const ViewPost = () => {
     
         setNewComment('');
         textAreaRef.current.value = "";
+        setShowCommentSubmit(prev => !prev);
     } 
 
     // edit / update, delete post
     const handleOptions = () => {
-
-        setShowOptions(true);
+        setShowOptions(prevShowOptions => !prevShowOptions);
     }
 
     const handleEdit = () => {
@@ -136,15 +142,8 @@ const ViewPost = () => {
             .update({text: editedPost.text, image_url: editedPost.image_url, video_url: editedPost.video_url})
             .eq('id', id);
 
-        if (data) {
-            // setPost(data[0]);
-            setPost(editedPost)
-            setIsEditing(false);
-        }
-        else {
-            console.error(error);
-            alert("error ocurred while updating post");
-        }
+        setPost(editedPost)
+        setIsEditing(false);
     }
 
     const handleCancel = () => {
@@ -164,22 +163,24 @@ const ViewPost = () => {
     }
 
     return (
-        <div>
-            <div>
+        <div className="view-post">
+            <div className="view-user-id-date">
+                <p>User ID</p>
+                <span></span>
                 <p>{post.created_at}</p>
+                <button onClick={handleOptions}><img className="option-button" alt="edit button" src={edit}/></button>
+            </div>
+            <div className="view-title">
                 <h2>{post.title}</h2>
-                <button onClick={handleOptions}>Options <img className="edit-button" alt="edit button" src={edit}/></button>
-                {/* <button onClick={handleEdit}>Options <img className="edit-button" alt="edit button" src={edit}/></button> */}
-                {/* <button className="delete-button" onClick={deletePost}>Delete</button> */}
             </div>
              {showOptions && (
-                <div>
-                <button onClick={handleEdit}>Edit</button>
-                <button className="delete-button" onClick={deletePost}>Delete</button>
+                <div className="view-options">
+                    <button onClick={handleEdit}>Edit</button>
+                    <button className="delete-button" onClick={deletePost}>Delete</button>
                 </div>
              )}
             {isEditing ? (                
-                <form>
+                <form className="edit-form">
                     <label htmlFor="text">Text (optional)</label> <br />
                     <textarea rows="5" cols="50" id="text" value={editedPost.text} onChange={handleEditing}></textarea> <br />
 
@@ -193,24 +194,29 @@ const ViewPost = () => {
                     <button type="button" onClick={handleCancel}>Cancel</button>
                 </form>
             ) : (
-                <>
-                    <p>{post.text}</p>
-                    {post.image_url && <img src={post.image_url} />}
+                <div className="view-post-details">
+                    <p className="view-post-text">{post.text}</p>
+                    {post.image_url && <img className="view-post-image" src={post.image_url} />}
                     {post.video_url && renderVideo(post.video_url)}
-                    {/* {post.video_url && <video controls><source src={post.video_url} type="video/mp4"/></video>} */}
-                </>
+                </div>
             )}
 
-            <div>
+            <div className="view-comments">
                 <h3>Comment Section</h3>
-                <form>
+                <form className="view-to-comment-cancel">
                     <textarea ref={textAreaRef} rows="1" cols="50" id="comment" placeholder="Add a comment .." onChange={(event) => {handleChange(event); adjustComment(event);}}></textarea>
-                    <button type="submit" onClick={commentSubmit}>Submit</button>
+                    {showCommentSubmit && (
+                        <div>
+                            <button type="submit" onClick={commentSubmit}>Comment</button>
+                            <button className="cancel-comment" onClick={handleComment}>Cancel</button>
+                        </div>
+                    )}
+                   
                 </form>
                 <br/>
                 {comments && comments.length > 0 ?
                 comments.map((comment, index) => (
-                    <div key={comment.id}>
+                    <div className="each-comment" key={comment.id}>
                         <p>{comment.comment}</p>
                     </div>
                 )): <div></div>}
