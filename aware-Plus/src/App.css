@@ -222,6 +222,12 @@
     justify-content: flex-start;
 }
 
+.comment-count-img {
+    width: 25px;
+    height: 25px;
+    margin-left: 10px;
+}
+
 /* view each post in detail page */
 .view-post {
     min-height: 100vh;
@@ -239,6 +245,10 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-start;
+}
+
+.user-id {
+    margin-right: 10px;
 }
 
 .view-post-image {

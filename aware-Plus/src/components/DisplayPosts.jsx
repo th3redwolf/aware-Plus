@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {supabase} from '../client.js';
 import {Link} from "react-router-dom";
+import {formatDistanceToNow} from 'date-fns';
 import { useParams } from "react-router-dom";
 import video_icon from "../../video-icon.png";
 import no_image from "../../no-image.png";
+import comment_icon from "../../comment-icon.png";
 
 const DisplayPosts = () => {
 
@@ -15,11 +17,24 @@ const DisplayPosts = () => {
 
         const fetchPosts = async () => {
 
-            const {data} = await supabase
+            const {data: postsData} = await supabase
                 .from('posts')
                 .select()
                 .order('created_at', {ascending: true});
-            setPosts(data);
+            // setPosts(data);
+
+            const postsAndComments = await Promise.all (
+
+                postsData.map(async (post) => {
+                    const {data: commentsData} = await supabase
+                        .from('comments')
+                        .select('id')
+                        .eq('post_id', post.id);
+                    
+                    return {...post, commentsCount: commentsData.length};
+                })
+            )
+            setPosts(postsAndComments);
         }
         fetchPosts();
     }, [])
@@ -40,12 +55,13 @@ const DisplayPosts = () => {
                             <div className="post-details">
                                 <Link to={`/view-post/${post.id}`}>
                                     <div className="top-row">
-                                        <p>User ID</p>
-                                        <h4 className="post-date">{post.created_at}</h4>
+                                        <p className="user-id">User ID</p>
+                                        <h4 className="post-date">{formatDistanceToNow(new Date(post.created_at))} ago</h4>
                                     </div>
                                     <h2 className="post-title">{post.title}</h2>
                                     <div className="bottom-row">
                                         <p className="post-upvotes">⬆️ {post.upvotes}</p>
+                                        <p><img className="comment-count-img" src={comment_icon}/> {post.commentsCount}</p>
                                     </div>
                                 </Link>
                             </div>

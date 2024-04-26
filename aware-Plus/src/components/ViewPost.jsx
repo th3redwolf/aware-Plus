@@ -1,12 +1,13 @@
 import React, {useState, useEffect, useRef, useCallback} from "react";
 import {useParams, useNavigate} from "react-router-dom";
 import {supabase} from '../client.js';
+import {formatDistanceToNow} from "date-fns";
 import edit from '../../edit.png';
 
 const ViewPost = () => {
 
     const {id} = useParams();
-    const [post, setPost] = useState({created_at: null, id: null, title: "", text: "", image_url: "", video_url: ""});
+    const [post, setPost] = useState({created_at: null, id: null, title: "", text: "", image_url: "", video_url: "", upvotes: 0});
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
 
@@ -162,12 +163,21 @@ const ViewPost = () => {
         navigate('/');
     }
 
+    const upvoteCount = async (event) => {
+
+        event.preventDefault();
+        await supabase
+            .from('posts')
+            .update({upvotes: post.upvotes + 1})
+            .eq('id', id);
+
+        setPost(prev => ({...prev, upvotes: prev.upvotes + 1}));
+    }
     return (
         <div className="view-post">
             <div className="view-user-id-date">
-                <p>User ID</p>
-                <span></span>
-                <p>{post.created_at}</p>
+                <p className="user-id">User ID</p>
+                <p>{formatDistanceToNow(new Date(post.created_at))} ago</p>
                 <button onClick={handleOptions}><img className="option-button" alt="edit button" src={edit}/></button>
             </div>
             <div className="view-title">
@@ -200,7 +210,7 @@ const ViewPost = () => {
                     {post.video_url && renderVideo(post.video_url)}
                 </div>
             )}
-
+            <button className="upvote-button" type="button" onClick={upvoteCount}>👍{post.upvotes}</button>
             <div className="view-comments">
                 <h3>Comment Section</h3>
                 <form className="view-to-comment-cancel">
