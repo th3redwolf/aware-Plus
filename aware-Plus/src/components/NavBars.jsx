@@ -1,10 +1,27 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import home from "../../home-icon.png";
 import burger_menu from "../../burger-menu.png";
+import awarePlus from "../../awarePlus.jpg";
+import aware from "../../aware+.jpg";
 
 const HeaderBar = () => {
+
     const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+
+        function handleResize() {
+            if (window.innerWidth > 700) {
+                setIsOpen(false);
+            }
+        }
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        }
+    }, [setIsOpen])
 
     return (
         <div className="header-bar">
@@ -15,24 +32,23 @@ const HeaderBar = () => {
                         <div className={`side-nav ${isOpen ? 'open' : ''}`}>
                             <nav>
                                 <div>
-                                    <Link to="/">Home Feed</Link>
-                                </div>
+                                    <Link style={{color: '#2f9ad0'}} to="/">Home Feed</Link>
+                                </div> <br/>
                                 <div>
-                                    <Link to="/create">Create Post</Link>
-                                </div>
+                                    <Link style={{color: '#2f9ad0'}} to="/create">Create Post</Link>
+                                </div> <br/>
                                 <div>
-                                    <Link to="/myAccount">My Account</Link>
+                                    <Link style={{color: '#2f9ad0'}} to="/myAccount">My Account</Link>
                                 </div>
                             </nav>
                         </div>
                     )}
-                    <div>
-                        <Link to="/">
-                            <div className="header-home-button">
-                                <img className="home-icon" alt="home button" src={home} />AwarePlus
-                            </div>
-                        </Link>
-                    </div>
+                    <Link to="/">
+                        <div className="header-home-button">
+                            <img className="home-icon" alt="home button" src={home} />
+                        </div>
+                    </Link>
+                    <Link className="header-home-button">Aware+</Link>
                     <div className="search-bar">
                         <label htmlFor="Search" className="visually-hidden">Search awarePlus</label>
                         <input
@@ -41,11 +57,14 @@ const HeaderBar = () => {
                             onChange={(e) => search(e.target.value)}
                         />
                     </div>
-                    <div className="header-login">
-                        <Link>
+                    
+                    <Link>
+                        <div className="header-login">
                             Log In
-                        </Link>
-                    </div>
+                        </div>
+
+                    </Link>
+                    
                 </nav>
             </header>
         </div>
@@ -58,17 +77,17 @@ const SideNav = () => {
         <div className="side-nav">
             <nav>
                 <div>
-                    <Link to="/">
+                    <Link style={{color: '#2f9ad0'}} to="/">
                         Home Feed
                     </Link>
-                </div>
+                </div> <br/>
                 <div>
-                    <Link to="/create">
+                    <Link style={{color: '#2f9ad0'}} to="/create">
                         Create Post
                     </Link>
-                </div>
+                </div> <br/>
                 <div>
-                    <Link to="/myAccount">
+                    <Link style={{color: '#2f9ad0'}} to="/myAccount">
                         My Account
                     </Link>
                 </div>

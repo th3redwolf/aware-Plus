@@ -2,7 +2,12 @@ import React, {useState, useEffect, useRef, useCallback} from "react";
 import {useParams, useNavigate} from "react-router-dom";
 import {supabase} from '../client.js';
 import {formatDistanceToNow} from "date-fns";
+import ReactQuill from 'react-quill';
+import 'quill/dist/quill.snow.css';
+import DOMpurify from 'dompurify';
 import edit from '../../edit.png';
+import upvote from '../../upvote.png';
+import comment_icon from '../../comment-icon.png';
 
 const ViewPost = () => {
 
@@ -18,7 +23,7 @@ const ViewPost = () => {
 
     const navigate = useNavigate();
     const textAreaRef = useRef(null);
-    
+
     useEffect(() => {
 
         const fetchPost = async () => {
@@ -29,7 +34,13 @@ const ViewPost = () => {
                 .eq('id', id);
             
             if (data && data.length > 0){
-                setPost(data[0]);
+                const post = data[0];
+                const {data: commentsData} = await supabase
+                    .from('comments')
+                    .select('id')
+                    .eq('post_id', post.id);
+
+                setPost({...post, commentsCount: commentsData.length});
             }
         }
         fetchPost();
@@ -112,6 +123,8 @@ const ViewPost = () => {
         setNewComment('');
         textAreaRef.current.value = "";
         setShowCommentSubmit(prev => !prev);
+
+        setPost(prev => ({...prev, commentsCount: prev.commentsCount + 1}));
     } 
 
     // edit / update, delete post
@@ -129,9 +142,10 @@ const ViewPost = () => {
     const handleEditing = (event) => {
 
         const {id, value} = event.target;
+        const sanitizedValue = id === 'text' ? DOMpurify.sanitize(value) : value;
         setEditedPost((prev) => {
             return {
-                ...prev, [id]:value,
+                ...prev, [id]: sanitizedValue,
             }
         })
     }
@@ -155,12 +169,28 @@ const ViewPost = () => {
     const deletePost = async (event) => {
 
         event.preventDefault();
-        const {data, error} = await supabase
-            .from('posts')
-            .delete()
-            .eq('id', id);
-        // window.location = '/';
-        navigate('/');
+        const userResponse = window.confirm("Are you sure you want to delete this post?");
+
+        if (userResponse) {
+            const {data: deleteComments, error: deleteCommentsError} = await supabase
+                .from('comments')
+                .delete()
+                .eq('post_id', id);
+            if (deleteCommentsError) {
+                console.error(deleteCommentsError);
+                return;
+            }
+
+            const {data: deletePost, error: deletePostError} = await supabase
+                .from('posts')
+                .delete()
+                .eq('id', id);
+            if (deletePostError) {
+                console.error(deletePostError);
+                return;
+            }
+            navigate('/');
+        }
     }
 
     const upvoteCount = async (event) => {
@@ -179,20 +209,24 @@ const ViewPost = () => {
                 <p className="user-id">User ID</p>
                 <p>{formatDistanceToNow(new Date(post.created_at))} ago</p>
                 <button onClick={handleOptions}><img className="option-button" alt="edit button" src={edit}/></button>
+                <div className="view-options-menu">
+                    {showOptions && (
+                        <div className="view-options">
+                            <button onClick={handleEdit}>Edit</button>
+                            <button className="delete-button" onClick={deletePost}>Delete</button>
+                        </div>
+                    )}
+                </div>
             </div>
             <div className="view-title">
                 <h2>{post.title}</h2>
             </div>
-             {showOptions && (
-                <div className="view-options">
-                    <button onClick={handleEdit}>Edit</button>
-                    <button className="delete-button" onClick={deletePost}>Delete</button>
-                </div>
-             )}
+
             {isEditing ? (                
                 <form className="edit-form">
                     <label htmlFor="text">Text (optional)</label> <br />
-                    <textarea rows="5" cols="50" id="text" value={editedPost.text} onChange={handleEditing}></textarea> <br />
+                    <ReactQuill value={editedPost.text} onChange={value => handleEditing({target: {id: 'text', value}})}/> <br/>
+                    {/* <textarea rows="5" cols="50" id="text" value={editedPost.text} onChange={handleEditing}></textarea> <br /> */}
 
                     <label htmlFor="image_url">Image URL</label> <br />
                     <input type="text" id="image_url" value={editedPost.image_url} onChange={handleEditing} /> <br />
@@ -205,12 +239,17 @@ const ViewPost = () => {
                 </form>
             ) : (
                 <div className="view-post-details">
-                    <p className="view-post-text">{post.text}</p>
+                    <div className="view-post-text" dangerouslySetInnerHTML={{__html: post.text}}></div>
+                    {/* <p className="view-post-text">{post.text}</p> */}
                     {post.image_url && <img className="view-post-image" src={post.image_url} />}
                     {post.video_url && renderVideo(post.video_url)}
                 </div>
             )}
-            <button className="upvote-button" type="button" onClick={upvoteCount}>👍{post.upvotes}</button>
+            <div className="view-upvote-comment">
+                <button className="upvote-button" type="button" onClick={upvoteCount}><img className="upvote-img" src={upvote}/>{post.upvotes}</button>
+                <p><img className="comment-count-img" src={comment_icon}/> {post.commentsCount}</p>
+            </div>
+            
             <div className="view-comments">
                 <h3>Comment Section</h3>
                 <form className="view-to-comment-cancel">

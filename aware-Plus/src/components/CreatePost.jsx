@@ -1,5 +1,8 @@
 import React, {useState} from "react";
 import {supabase} from "../client";
+import ReactQuill from 'react-quill';
+import 'quill/dist/quill.snow.css';
+import DOMpurify from 'dompurify';
 
 const CreatePost = () => {
 
@@ -8,9 +11,10 @@ const CreatePost = () => {
     const handleChange = (event) => {
 
         const {id, value} = event.target;
+        const sanitizedValue = id === 'text' ? DOMpurify.sanitize(value) : value;
         setPost((prev) => {
             return {
-                ...prev, [id]:value,
+                ...prev, [id]:sanitizedValue,
             }
         })
     }
@@ -33,12 +37,14 @@ const CreatePost = () => {
 
     return (
         <div>
+            <h1 className="create-new-post">Create a new Post</h1> <br/>
             <form>
                 <label htmlFor="title">Title</label> <br/>
                 <input type="text" id="title" onChange={handleChange}/> <br/>
 
-                <label htmlFor="text">Text (optional)</label> <br/>
-                <textarea rows="5" cols="50" id="text" onChange={handleChange}></textarea> <br/>
+                <label htmlFor="text">Text</label> <br/>
+                <ReactQuill onChange={value => handleChange({target: {id: 'text', value}})}/> <br/>
+                {/* <textarea rows="5" cols="50" id="text" onChange={handleChange}></textarea> <br/> */}
 
                 <label htmlFor="image_url">Image URL</label> <br/>
                 <input type="text" id="image_url" onChange={handleChange}/> <br/>

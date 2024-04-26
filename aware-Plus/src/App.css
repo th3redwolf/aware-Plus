@@ -71,7 +71,15 @@
 }
 
 .header-home-button {
+    margin-top: 5px;
     padding: 0px 0px 0px 3px;
+    font-size: larger;
+    color: #2f9ad0;
+}
+
+.awarePlus-img {
+    width: 150px;
+    height: 50px;
 }
 
 .home-icon {
@@ -114,6 +122,7 @@
 .header-login {
     align-items: center;
     padding: 12px 0px 0px 0px;
+    color: #2f9ad0;
 }
 
 /* side bar left */
@@ -125,9 +134,10 @@
     bottom: 0;
     width: 150px;
     border-right: 1px solid;
-    padding: 5px;
+    padding: 30px 0;
     background-color: #fbfcfd;
 }
+
 .header-nav button {
     display: none;
     z-index: 1000;
@@ -137,6 +147,7 @@
     background-color: #efebebbf;
     color: #0e0e0e;
   }
+
   @media (max-width: 700px) {
     .side-nav {
       display: none;
@@ -145,7 +156,10 @@
         display: block;
     }
     .view-post {
-      padding-left: 10px !important; 
+      left: 10px !important; 
+    }
+    .display-posts {
+        left: 10px !important;
     }
   }
   
@@ -231,10 +245,13 @@
 /* view each post in detail page */
 .view-post {
     min-height: 100vh;
+    position: absolute;
+    top: 70px;
+    left: 180px;
     /* min-width: 950px; */
-    padding-top: 50px;
-    padding-left: 150px;
-    background-color: #f2f5f6c2;
+    /* padding-top: 50px;
+    padding-left: 150px; */
+    background-color: #ffffff;
     text-align: left;
     max-width: 800px;
     /* margin: auto; */
@@ -251,12 +268,42 @@
     margin-right: 10px;
 }
 
+.option-button {
+    /* position: relative; */
+    width: 20px;
+    float: right;
+    cursor: pointer;
+}
+
+/* .view-options-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.view-options {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #9e2222;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.view-options button {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+} */
+
+
 .view-post-image {
     width: 100%;
     max-width: 700px;
     height: 100%;
     max-height: 600px;
     margin-bottom: 5px;
+    border-right: 1px solid;
 }
 
 .view-title,
@@ -267,6 +314,27 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
+}
+
+.view-post-text {
+    border: 1px solid;
+    width: 600px;
+    height: 200px;
+    padding: 10px;
+    margin-bottom: 20px;
+    overflow: auto;
+    
+}
+
+.view-upvote-comment {
+    display: flex;
+    flex-direction: row;
+}
+
+.upvote-img {
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
 }
 
 #comment {
@@ -314,11 +382,8 @@
 } */
 
 /* option button for edits / delete */
-.option-button {
-    width: 20px;
-    float: right;
-}
 
-.option-button {
-    cursor: pointer;
+/* create post overview */
+.create-new-post {
+
 }
