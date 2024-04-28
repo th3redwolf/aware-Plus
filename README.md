@@ -2,6 +2,10 @@
 
 Submitted by: **Nicolas Kraft**
 
+## Live Application
+
+The application is deployed and can be accessed at [AwarePlus Live Application](https://beamish-mermaid-8630bd.netlify.app/).
+
 This web app: 
 
 **This is a social media web application similar to Reddit where users can create and interact with posts and other users via comments. The main features of the application include:**
