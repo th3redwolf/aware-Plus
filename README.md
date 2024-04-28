@@ -56,7 +56,7 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-![Video Walkthrough](./awarePlus.gif)
+![Video Walkthrough](./public/awarePlus.gif)
 
 ## License
 
