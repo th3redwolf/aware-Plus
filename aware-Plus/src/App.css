@@ -242,6 +242,11 @@
     margin-left: 10px;
 }
 
+.loading-gif {
+    width: 100px;
+    height: 100px;
+}
+
 /* view each post in detail page */
 .view-post {
     min-height: 100vh;

@@ -8,11 +8,12 @@ import DOMpurify from 'dompurify';
 import edit from '../../edit.png';
 import upvote from '../../upvote.png';
 import comment_icon from '../../comment-icon.png';
+import user_profile from '../../user-profile.png';
 
 const ViewPost = () => {
 
     const {id} = useParams();
-    const [post, setPost] = useState({created_at: null, id: null, title: "", text: "", image_url: "", video_url: "", upvotes: 0});
+    const [post, setPost] = useState({created_at: null, id: null, title: "", text: "", image_url: "", video_url: "", upvotes: 0, user_id: null, username: ""});
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
 
@@ -20,6 +21,8 @@ const ViewPost = () => {
     const [editedPost, setEditedPost] = useState({...post});
     const [showOptions, setShowOptions] = useState(false);
     const [showCommentSubmit, setShowCommentSubmit] = useState(false);
+
+    const [user, setUser] = useState(null);
 
     const navigate = useNavigate();
     const textAreaRef = useRef(null);
@@ -50,7 +53,8 @@ const ViewPost = () => {
             const { data } = await supabase
                 .from('comments')
                 .select('*')
-                .eq('post_id', id);
+                .eq('post_id', id)
+                .order('created_at', {ascending: false});
 
             if (data) {
                 console.log(data);
@@ -77,6 +81,17 @@ const ViewPost = () => {
         }
 
     }, [id, supabase])
+
+    // user json
+    useEffect(() => {
+
+        const fetchUser = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            setUser(user);
+        }
+        fetchUser();
+        console.log(user)
+    }, [])
 
     function renderVideo(url) {
 
@@ -134,6 +149,16 @@ const ViewPost = () => {
 
     const handleEdit = () => {
 
+        if (!user) {
+            alert('You must be logged in to edit your post.');
+            return;
+        }
+
+        if (post.user_id !== user.id) {
+            alert("You can only edit your own posts.");
+            return;
+        }
+
         setEditedPost({...post});
         setIsEditing(true);
         setShowOptions(false);
@@ -157,8 +182,14 @@ const ViewPost = () => {
             .update({text: editedPost.text, image_url: editedPost.image_url, video_url: editedPost.video_url})
             .eq('id', id);
 
-        setPost(editedPost)
+        if (error) {
+            console.error(error);
+            return;
+        }
+        setPost(data[0]);
         setIsEditing(false);
+
+        navigate(`/view-post/${data[0].id}`);
     }
 
     const handleCancel = () => {
@@ -169,6 +200,19 @@ const ViewPost = () => {
     const deletePost = async (event) => {
 
         event.preventDefault();
+
+        // const user = supabase.auth.user;
+
+        if (!user) {
+            alert('You must be logged in to delete your post.');
+            return;
+        }
+
+        if (post.user_id !== user.id) {
+            alert("You can only delete your own posts.");
+            return;
+        }
+
         const userResponse = window.confirm("Are you sure you want to delete this post?");
 
         if (userResponse) {
@@ -205,8 +249,9 @@ const ViewPost = () => {
     }
     return (
         <div className="view-post">
-            <div className="view-user-id-date">
-                <p className="user-id">User ID</p>
+            <div className="view-user-id-date" key={post.id}>
+                <img src={post.avatarUrl || user_profile} alt='Avatar' style={{borderRadius: '50%'}}/>
+                <p className="user-id">{post.username}</p>
                 <p>{formatDistanceToNow(new Date(post.created_at))} ago</p>
                 <button onClick={handleOptions}><img className="option-button" alt="edit button" src={edit}/></button>
                 <div className="view-options-menu">
@@ -223,7 +268,7 @@ const ViewPost = () => {
             </div>
 
             {isEditing ? (                
-                <form className="edit-form">
+                <form className="edit-form" onSubmit={handleSave}>
                     <label htmlFor="text">Text (optional)</label> <br />
                     <ReactQuill value={editedPost.text} onChange={value => handleEditing({target: {id: 'text', value}})}/> <br/>
                     {/* <textarea rows="5" cols="50" id="text" value={editedPost.text} onChange={handleEditing}></textarea> <br /> */}
@@ -234,7 +279,7 @@ const ViewPost = () => {
                     <label htmlFor="video_url">Video URL</label> <br />
                     <input type="text" id="video_url" value={editedPost.video_url} onChange={handleEditing} /> <br />
 
-                    <button onClick={handleSave}>Save</button>
+                    <button type="submit">Save</button>
                     <button type="button" onClick={handleCancel}>Cancel</button>
                 </form>
             ) : (

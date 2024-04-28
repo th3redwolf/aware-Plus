@@ -38,7 +38,7 @@ const HeaderBar = () => {
                                     <Link style={{color: '#2f9ad0'}} to="/create">Create Post</Link>
                                 </div> <br/>
                                 <div>
-                                    <Link style={{color: '#2f9ad0'}} to="/myAccount">My Account</Link>
+                                    <Link style={{color: '#2f9ad0'}} to="/myProfile">My Profile</Link>
                                 </div>
                             </nav>
                         </div>
@@ -48,7 +48,7 @@ const HeaderBar = () => {
                             <img className="home-icon" alt="home button" src={home} />
                         </div>
                     </Link>
-                    <Link className="header-home-button">Aware+</Link>
+                    <Link className="header-home-button" to="/">Aware+</Link>
                     <div className="search-bar">
                         <label htmlFor="Search" className="visually-hidden">Search awarePlus</label>
                         <input
@@ -58,7 +58,7 @@ const HeaderBar = () => {
                         />
                     </div>
                     
-                    <Link>
+                    <Link to="/login">
                         <div className="header-login">
                             Log In
                         </div>
@@ -87,8 +87,8 @@ const SideNav = () => {
                     </Link>
                 </div> <br/>
                 <div>
-                    <Link style={{color: '#2f9ad0'}} to="/myAccount">
-                        My Account
+                    <Link style={{color: '#2f9ad0'}} to="/myProfile">
+                        My Profile
                     </Link>
                 </div>
             </nav>
