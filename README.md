@@ -1,7 +1,5 @@
 # Web Development Project - *AwarePlus*
 
-Submitted by: **Nicolas Kraft**
-
 ## Live Application
 
 The application is deployed and can be accessed at [AwarePlus Live Application](https://beamish-mermaid-8630bd.netlify.app/).
@@ -20,11 +18,7 @@ This web app:
 
 **The application is built using React and Vite, with user data being stored in a backend database (supabase). The client.js file handles the interaction with the backend.**
 
-Time spent: **20** hours spent in total
-
-## Required Features
-
-The following **required** functionality is completed:
+## Features
 
 - [X] **A create form that allows the user to create posts**
 - [X] **Posts have a title and optionally additional textual content and/or an image added as an external image URL**
@@ -35,22 +29,17 @@ The following **required** functionality is completed:
 - [X] **Users can search for posts by title**
 - [X] **A separate post page for each created post, where any additional information is shown is linked whenever a user clicks a post**
 - [X] **Users can leave comments underneath a post on the post's separate page**
-- [X] **Each post should have an upvote button on the post's page. Each click increases its upvotes count by one and users can upvote any number of times**
+- [X] **Each post has an upvote button on the post's page. Each click increases its upvotes count by one and users can upvote any number of times**
 - [X] **A previously created post can be edited or deleted from its post page**
 
-The following **optional** features are implemented:
-
-- [X] Users can share and view web videos
-
-The following **additional** features are implemented:
-
-* [X] List anything else that you added to improve the site's functionality!
-
-- [X] Instead of using Secret Key, Users can sign up and log in and only create, edit, or delete their own posts, which is managed via their user ID
-- [X] Instead of being assigned a random user ID, each signed in user is assigned a username based on their email address. This username is displayed on each post and comment they create.
+- [X] **Users can share and view web videos**
+- [X] **Users can sign up and log in and only create, edit, or delete their own posts, which is managed via their user ID**
+- [X] **Instead of being assigned a random user ID, each signed in user is assigned a username based on their email address. This username is displayed on each post and comment they create.**
 
 ## Video Walkthrough
 
-Here's a walkthrough of implemented user stories:
-
 ![Video Walkthrough](./public/awarePlus.gif)
+
+## License
+
+    All rights reserved.
